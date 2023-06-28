@@ -60,6 +60,12 @@ Note: the MockAPI and Salesforce variables should be removed, or the quotes left
 
 4. Supply the domain and URL of the publicly accessible webserver where you plan to deploy this.  
 ![Screenshot 2023-06-28 at 12 43 11 PM](https://github.com/wxsd-sales/call-notifications-sidebar/assets/19175490/9b308946-8a21-482a-a1a8-7b6e0dd03126)
+
+### MockAPI Setup
+1. Navigate to [mockapi.ip](https://mockapi.io) and either create a new project, or add a resource to an existing project.
+2. The project can have any name, but the resource added must be called **SideBarContacts**  
+
+3. I recommend populating the DB with MockAPI's fake data generator, but you will need to replace t
     
 ## Live Demo
 
