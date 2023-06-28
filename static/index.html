@@ -1,0 +1,449 @@
+<html>
+    <head>
+        <script src="https://unpkg.com/@webex/embedded-app-sdk@2.0.0-beta.1" defer></script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+        <script src="https://kit.fontawesome.com/f4a0e6453b.js" crossorigin="anonymous"></script>
+        <style>
+            .column.is-centered {
+                display: flex;
+                justify-content: center;
+            }
+  
+            .my-hero-fullheight {
+              height: calc(100vh - 72px)
+            }
+  
+            .is-vcentered {
+                display: flex;
+                flex-wrap: wrap;
+                align-content: center;
+            }
+  
+            .iframe {
+                width:100%;
+                min-height: 600px;
+            }
+  
+            #hero-section {
+                border-radius: 6px;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="header-box" class="columns is-centered is-info has-background-info mt-0">
+            <div class="column is-centered">
+                <h1 id='main-title' class="title">Inbound Call Manager</h1>
+            </div>
+        </div>
+        <div class="columns is-centered mb-0">
+            <div class="column is-narrow">
+                <div class="tabs is-toggle is-centered">
+                    <ul id="integration-tab">
+                    <li id="mockapi" class="is-active" style="display: none;">
+                        <a name="mockapi">MockAPI</a>
+                    </li>
+                    <li id="salesforce" style="display: none;">
+                        <a name="salesforce">Salesforce</a>
+                    </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="column is-narrow">
+                <div class="tabs is-toggle is-centered">
+                    <ul id="call-action-tab" style="display: none;">
+                    <li id="call-action-api" class="is-active">
+                        <a name="call-action-api">
+                        <span name="call-action-api" class="icon is-small"><i name="call-action-api" class="fas fa-code" aria-hidden="true"></i></span>
+                        <span name="call-action-api">API Request</span>
+                        </a>
+                    </li>
+                    <li id="call-action-spop">
+                        <a name="call-action-spop">
+                        <span name="call-action-spop" class="icon is-small"><i name="call-action-spop" class="fas fa-window-restore" aria-hidden="true"></i></span>
+                        <span name="call-action-spop">Screen Pop</span>
+                        </a>
+                    </li>
+                    <li id="call-action-both">
+                        <a name="call-action-both">
+                        <span name="call-action-both" class="icon is-small"><i name="call-action-both" class="fas fa-code" aria-hidden="true"></i></span>
+                        <span name="call-action-both" class="icon is-small"><i name="call-action-both" class="fas fa-window-restore" aria-hidden="true" style="margin-right:.5em;"></i></span>
+                        <span name="call-action-both">Both</span>
+                        </a>
+                    </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="column is-narrow">
+                <button id="caller-info-button" class="button is-rounded is-info">
+                    <span id="caller-info-button" class="icon">
+                      <i class="fas fa-circle-info"></i>
+                    </span>
+                </button>
+            </div>
+        </div>
+        <div class="columns is-centered mb-0">
+            <div class="column is-three-quarters">
+                <article class="message is-info">
+                    <div id="call-behavior-message" class="message-body" style="display:none;"></div>
+                </article>
+            </div>
+        </div>
+        <div class="columns is-centered mb-0">
+            <div class="column is-three-quarters">
+                <article id="caller-info" class="" style="display: none;">
+                    <div class="message-header">
+                        <p>Caller Information</p>
+                        <button id="delete-caller-info" class="delete" aria-label="delete"></button>
+                    </div>
+                    <nav class="panel">
+                        <!--<div class="panel-block">
+                            <p id="caller-json" class="control has-icons-left"></p>
+                        </div>-->
+                        <a class="panel-block">
+                          <span class="panel-icon">
+                            <i class="fas fa-hashtag" aria-hidden="true"></i>
+                          </span>
+                          <p id="call-id">CallId</p>
+                        </a>
+                        <a class="panel-block is-active">
+                          <span class="panel-icon">
+                            <i class="fas fa-phone" aria-hidden="true"></i>
+                          </span>
+                          <p id="caller-id">CallerId</p>
+                        </a>
+                        <a class="panel-block">
+                          <span class="panel-icon">
+                            <i class="fas fa-table-list" aria-hidden="true"></i>
+                          </span>
+                          <p id="call-type">CallType</p>
+                        </a>
+                        <a class="panel-block">
+                          <span class="panel-icon">
+                            <i class="fas fa-bookmark" aria-hidden="true"></i>
+                          </span>
+                          <p id="call-state">CallState</p>
+                        </a>
+                    </nav>
+                </article>
+            </div>
+        </div>
+        <div id="api-info-div" class="columns is-centered" style="display:none;">
+            <div class="column is-three-quarters">
+                <article id="api-info" class="">
+                    <div class="message-header">
+                        <p id="api-title">API Information</p>
+                        <button id="delete-api-info" class="delete" aria-label="delete"></button>
+                    </div>
+                    <nav class="panel">
+                        <a class="panel-block is-active">
+                          <span class="panel-icon">
+                            <i class="fas fa-user" aria-hidden="true"></i>
+                          </span>
+                          <p id="api-name-text">User</p>
+                        </a>
+                        <a id="api-email" class="panel-block">
+                            <span class="panel-icon">
+                              <i class="fas fa-regular fa-envelope" aria-hidden="true"></i>
+                            </span>
+                            <p id="api-email-text">Email</p>
+                          </a>
+                        <a id="api-address" class="panel-block">
+                          <span class="panel-icon">
+                            <i class="fas fa-address-card" aria-hidden="true"></i>
+                          </span>
+                          <p id="api-address-text">Address</p>
+                        </a>
+                        <a id="api-link" class="panel-block" style="display: none;">
+                            <span class="panel-icon">
+                              <i class="fas fa-regular fa-link" aria-hidden="true"></i>
+                            </span>
+                            <p id="api-link-text">Link</p>
+                        </a>
+                    </nav>
+                </article>
+            </div>
+        </div>
+        <!--<a href="https://myown171-dev-ed.lightning.force.com/lightning/r/Contact/0037Q00000cKuO2QAK/view" target="_blank">Open page in new window</a>-->
+        <!--<iframe src="https://ciscocollaboration.lightning.force.com/lightning/r/Account/0014x00001vz7tJAAQ/view" allow="camera;microphone;" class="iframe"></iframe>-->
+        <!--<iframe src="https://myown171-dev-ed.lightning.force.com/lightning/r/Contact/0037Q00000cKuO2QAK/view" class="iframe"></iframe>-->
+        <div id="call-info"></div>
+        <div id="caller-info"></div>
+        <div id="iframe-content"></div>
+    </body>
+    <script src="https://code.jquery.com/jquery-3.7.0.min.js" integrity="sha256-2Pmvv0kuTBOenSvLm6bvfBSSHrUJ+3A7x6P5Ebd07/g=" crossorigin="anonymous"></script>
+    <script type="text/javascript" defer>
+
+        var integrationNameHash = {'mockapi': "MockAPI", "salesforce": "Salesforce"};
+
+        function getActiveIntegration(){
+            activeLis = $('#integration-tab li.is-active');
+            if(activeLis.length > 0){
+                return activeLis[0].id;
+            } else {
+                return undefined;
+            }
+        }
+
+        function updateMainMessage(integration, callAction){
+            let integrationName = integrationNameHash[integration];
+            console.log(integrationName);
+            let msg = "When you receive an incoming call, ";
+            if(integrationName){
+                if(callAction == "call-action-api"){
+                    msg += `an API request will be made to ${integrationName} to retrieve information about the caller.`
+                } else if(callAction == "call-action-spop"){
+                    msg += `a new ${integrationName} window will be opened that shows information about the caller.`
+                } else if(callAction == "call-action-both"){
+                    msg += `a new ${integrationName} window will be opened and an API request will be made to retrieve information about the caller.`
+                }
+            } else {
+                msg += "information about the caller will be displayed below."
+            }
+            
+            $('#call-behavior-message').text(msg);
+        }
+
+        $('#integration-tab').on('click', function(e){
+            let name = e.target.name;
+            console.log(name);
+            $('#integration-tab li.is-active').removeClass('is-active');
+            $(`#${name}`).addClass('is-active');
+            updateMainMessage(name, $('#call-action-tab li.is-active')[0].id);
+        })
+
+        $('#call-action-tab').on('click', function(e){
+            let name = $(e.target).attr('name');
+            console.log(name);
+            $('#call-action-tab li.is-active').removeClass('is-active');
+            $(`#${name}`).addClass('is-active');
+            updateMainMessage(getActiveIntegration(), $('#call-action-tab li.is-active')[0].id);
+        })
+
+        $('#api-link').on('click', function(e){
+            window.open($('#api-link-text').attr('href'));
+        })
+
+        $('#caller-info-button').on('click', function(e){
+            if($('#call-behavior-message').is(":visible")){
+                $('#call-behavior-message').hide();
+            } else {
+                $('#call-behavior-message').show();
+            }
+        })
+
+        function clearCallerInfo(){
+            $('#caller-message').empty();
+            $('#caller-info').hide();
+        }
+
+        $('#delete-api-info').on('click', function(e){
+            $('#api-info-div').hide();
+        })
+        
+        $('#delete-caller-info').on('click', function(e){
+            clearCallerInfo();
+        })
+
+
+        function handleBadge(embedded_app, callCount) {
+            embedded_app.context.getSidebar().then((s) => {
+                sidebar = s;
+                console.log("Show a badge on the sidebar...");
+                // Make sure the sidebar is available..
+                if (!sidebar) {
+                    console.log("Sidebar info is not available. Error: ", webex.Application.ErrorCodes[4]);
+                    return;
+                }
+                // Initialize a badge object...
+                const badge = {
+                    badgeType: 'count',
+                    count: callCount,
+                };
+                console.log(`sidebar badge: ${JSON.stringify(badge)}`);
+                // Show the badge...
+                sidebar.showBadge(badge).then((success) => {
+                    console.log("sidebar.showBadge() successful.", success);
+                }).catch((error) => {
+                    console.log("sidebar.showBadge() failed. Error: ", webex.Application.ErrorCodes[error]);
+                });
+            }).catch((error) => {
+                console.log("getSidebar() failed. Error: ", webex.Application.ErrorCodes[error]);
+            });
+        }
+
+
+        async function handleCallStateChange(embedded_app, call) {
+            $('#call-state').text(call.state);
+            if(call.state == "Started") {
+                console.log("A call has come in...");
+                //console.log(embedded_app);
+                if(embedded_app.application.states.viewState != "IN_FOCUS"){
+                    handleBadge(embedded_app, call.remoteParticipants.length);
+                }
+                // For all calls, log the information...
+                console.log(call);
+                let callerId;
+                let callerName;
+                if(call.remoteParticipants.length > 0){
+                    callerId = call.remoteParticipants[0].callerID;
+                    callerName = call.remoteParticipants[0].name;
+                    //$('#caller-id').text(callerId.substring(0,6) + "XXXX");
+                    $('#caller-id').text(callerId);
+                }
+
+                if(!callerId && callerName){
+                    console.log(`No callerId (${callerId}), but callerName was found, assigning callerName value (${callerName}) to callerId.`)
+                    callerId = callerName;
+                }
+                //$('#caller-json').text(JSON.stringify(call.localParticipant));
+                $('#call-id').text(call.id);
+                $('#call-type').text(call.callType);
+                
+                let callAction = $('#call-action-tab li.is-active')[0].id;
+                let integration = getActiveIntegration();
+                console.log(`callAction: ${callAction}`);
+
+                $('#caller-info').show();
+
+                if(integration){
+                    if(callAction == "call-action-api" || callAction == "call-action-both"){
+                        if(callerId){
+                            $.post("/api", JSON.stringify({"integration":integration, "caller_id":callerId, "secondary_caller_id":callerName}), function(result){
+                                let resp = JSON.parse(result);
+                                console.log(resp);
+                                let data = resp.data;
+
+                                if(data.name){
+                                    $('#api-name-text').text(data.name);
+                                } else {
+                                    $('#api-name-text').text("?");
+                                }
+
+                                if(data.address){
+                                    $('#api-address').show();
+                                    $('#api-address-text').text(data.address);
+                                } else {
+                                    $('#api-address').hide();
+                                    $('#api-address-text').text("?");
+                                }
+
+                                if(data.email){
+                                    $('#api-email').show();
+                                    $('#api-email-text').text(data.email);
+                                } else {
+                                    $('#api-email').hide();
+                                    $('#api-email-text').text("?");
+                                }
+
+                                if(resp.url){
+                                    $('#api-link-text').attr('href', resp.url);
+                                    $('#api-link-text').text(`View ${integrationNameHash[integration]} Page`);
+                                    $('#api-link').show();
+                                } else {
+                                    $('#api-link').hide();
+                                }
+
+                                if(resp.error){
+                                    console.log(`/api response ERROR: ${resp.error}`);
+                                } else {
+                                    $('#api-title').text( integrationNameHash[integration] + " Information");
+                                    $('#api-info-div').show();
+
+                                    if(callAction == "call-action-both"){
+                                        if(resp.url){
+                                            window.open(resp.url);
+                                        } else {
+                                            console.log("NO WINDOW URL!")
+                                        }
+                                    }
+                                }
+                            });
+                        }
+                    } else {
+                        $('#api-info-div').hide();
+                    }
+
+                    if(callAction == "call-action-spop"){
+                        if(callerId){
+                            $.post("/url", JSON.stringify({"integration":integration, "caller_id":callerId}), function(result){
+                                let resp = JSON.parse(result);
+                                console.log(resp);
+                                if(resp.url){
+                                    window.open(resp.url);
+                                } else {
+                                    console.log("NO WINDOW URL!")
+                                }
+
+                                if(resp.error){
+                                    console.log(`/url response ERROR: ${resp.error}`);
+                                }
+                            });
+                        }
+                    }
+                }
+            } else if(call.state == "Connected"){
+                console.log("Call is connected.");
+            } else if(call.state == "Ended"){
+                console.log("Call is ended.");
+            } else {
+                console.log("Other call.state:" + call.state);
+            }
+        }
+
+
+        window.addEventListener('load', function () {
+            updateMainMessage(getActiveIntegration(), $('#call-action-tab li.is-active')[0].id);
+            console.log("Hello, app.");
+
+            $.post("/options", function(result){
+                let resp = JSON.parse(result);
+                console.log(resp);
+                if(!resp.mockapi){
+                    $('#mockapi').removeClass('is-active');
+                    $('#salesforce').addClass('is-active');
+                } else {
+                    $('#mockapi').show();
+                }
+                if(!resp.salesforce){
+                    $('#salesforce').removeClass('is-active');
+                } else {
+                    $('#salesforce').show();
+                }
+
+                if(resp.error){
+                    console.log(`/url response ERROR: ${resp.error}`);
+                }
+                let activeIntegration = getActiveIntegration();
+                if(activeIntegration){
+                    $('#call-action-tab').show();
+                }
+                updateMainMessage(activeIntegration, $('#call-action-tab li.is-active')[0].id);
+            });
+            //console.log(window.webex);
+            var embedded_app = new window.webex.Application();
+            //console.log(embedded_app);
+            var sidebar;
+
+            embedded_app.onReady().then(() => {
+                console.log("onReady()", { message: "EA is ready." });
+                embedded_app.listen().then(() => {
+                    embedded_app.on("sidebar:callStateChanged", (call) => {
+                        console.log("Call state changed. New call object:", call);
+                        handleCallStateChange(embedded_app, call);
+                    });
+
+                    embedded_app.on("application:viewStateChanged", (viewState) => {
+                        console.log("View state changed. Current view:", viewState);
+                        switch (viewState) {
+                            case "IN_FOCUS":
+                                // User has noticed the badge and has responded, so we can remove it...
+                                handleBadge(embedded_app, 0);
+                                break;
+                        }
+                    });
+                });
+            });
+        });
+        
+    </script>
+</html>
