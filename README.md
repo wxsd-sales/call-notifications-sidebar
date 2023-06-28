@@ -52,7 +52,13 @@ MY_MOCKAPI_URL=""
 Note: the MockAPI and Salesforce variables should be removed, or the quotes left empty, if you are not using mockapi or salesforce respectively.  
 4. Run
 ```python3 server.py```
-    
+
+### Sidebar App Setup
+1. Create a new app while signed in [here](https://developer.webex.com/my-apps), and choose Embedded App.  
+2. Select Sidebar and give it a name. You will need to request admin approval once created.  
+
+3. Supply the domain and URL of the publicly accessible webserver where you plan to deploy this.
+
     
 ## Live Demo
 
