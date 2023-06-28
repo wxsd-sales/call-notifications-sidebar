@@ -1,12 +1,20 @@
 import aiohttp
 import asyncio
 import json
+import logging
 import traceback
 import urllib.parse
 
 from aiohttp import web
-from lib.settings import Settings
+from lib.settings import Settings, LogRecord, CustomFormatter
 
+logging.setLogRecordFactory(LogRecord)
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+ch = logging.StreamHandler()
+ch.setLevel(logging.DEBUG)
+ch.setFormatter(CustomFormatter())
+logger.addHandler(ch)
 
 class Salesforce:
     access_token = None
@@ -18,9 +26,8 @@ async def simple_get(use_url, headers={}):
         async with session.get(use_url) as resp:
             res = await resp.json()
             if resp.status > 299:
-                print("resp.status:{0}".format(resp.status))
-                print("resp:{0}".format(resp))
-                print("res:{0}".format(res))
+                logger.debug("resp:{0}".format(resp))
+                logger.debug("res:{0}".format(res))
             return resp.status, res
 
 async def simple_post(use_url, data={}):
@@ -28,20 +35,20 @@ async def simple_post(use_url, data={}):
         async with session.post(use_url, json=data) as resp:
             res = await resp.json()
             if resp.status > 299:
-                print(resp, res)
+                logger.debug(resp, res)
             return res
 
 async def salesforce_get(url, attempts=0):
     headers = {"Accept":"application/json",
-            "Authorization":"Bearer {0}".format(Salesforce.access_token)}
+               "Authorization":"Bearer {0}".format(Salesforce.access_token)}
     status, res = await simple_get(url, headers)
     if status > 299:
         if attempts == 0:
-            print('salesforce_get failed.  Generating a new token and retrying.')
+            logger.debug('salesforce_get failed.  Generating a new token and retrying.')
             await get_salesforce_token()
             res = await salesforce_get(url, attempts+1)
         else:
-            print('salesforce_get failed a second time.  Not retrying again.')
+            logger.debug('salesforce_get failed a second time.  Not retrying again.')
     return res
 
 def get_salesforce_browser_url(instance_url):
@@ -55,9 +62,9 @@ async def get_salesforce_token():
     url += "client_secret={0}&".format(Settings.sf_client_secret)
     url += "username={0}&".format(Settings.sf_username)
     url += "password={0}&grant_type=password".format(Settings.sf_password)
-    print('get_salesforce_token url:{0}'.format(url))
+    logger.debug('get_salesforce_token url:{0}'.format(url))
     res = await simple_post(url)
-    print('get_salesforce_token res:{0}'.format(res))
+    logger.debug('get_salesforce_token res:{0}'.format(res))
     Salesforce.access_token = res.get('access_token')
     Salesforce.instance_url = res.get('instance_url')
     Salesforce.browser_url = get_salesforce_browser_url(res.get('instance_url'))
@@ -67,7 +74,7 @@ async def salesforce_query(select_items, phone_number):
     url_path = "/services/data/v53.0/query?"
     url_template = Salesforce.instance_url + url_path + "q=SELECT+{0}+FROM+Contact+WHERE+phone='{1}'"
     url = url_template.format(select_items, phone_number)
-    print("Querying Salesforce for: {0}".format(url))
+    logger.info("Querying Salesforce for: {0}".format(url))
     data = await salesforce_get(url)
     return data
 
@@ -78,7 +85,7 @@ async def get_salesforce_contact(select_items, caller_id, secondary_caller_id):
         data = await salesforce_query(select_items, urllib.parse.quote_plus(secondary_caller_id))
     if data == {} or len(data.get('records', [])) == 0:
         data = await salesforce_query(select_items, caller_id)
-    print("Salesforce API resp:{0}".format(data))
+    logger.info("Salesforce API resp:{0}".format(data))
     if len(data.get('records', [])) > 0:
         data = data['records'][0]
         data =  {k.lower(): v for k, v in data.items()}
@@ -87,7 +94,7 @@ async def get_salesforce_contact(select_items, caller_id, secondary_caller_id):
 
 
 async def page_handle(request):
-    print('serving index.html')
+    logger.debug('serving index.html')
     return web.FileResponse('./static/index.html')
 
 async def api(request):
@@ -101,9 +108,9 @@ async def api(request):
         integration = body.get('integration')
         caller_id = body.get('caller_id')
         secondary_caller_id = body.get('secondary_caller_id')
-        print("integration:{0}".format(integration))
-        print("caller_id:{0}".format(caller_id))
-        print("secondary_caller_id:{0}".format(secondary_caller_id))
+        logger.debug("integration:{0}".format(integration))
+        logger.debug("caller_id:{0}".format(caller_id))
+        logger.debug("secondary_caller_id:{0}".format(secondary_caller_id))
         if integration == "mockapi":
             use_url = Settings.mockapi_url + caller_id
             status, data = await simple_get(use_url)
@@ -117,7 +124,7 @@ async def api(request):
     except Exception as e:
         response = {"error": default_error_msg}
         traceback.print_exc()
-    print(response)
+    logger.info("/api response:{0}".format(response))
     return web.Response(text=json.dumps(response))
 
 async def url(request):
@@ -131,9 +138,9 @@ async def url(request):
         integration = body.get('integration')
         caller_id = body.get('caller_id')
         secondary_caller_id = body.get('secondary_caller_id')
-        print(integration)
-        print(caller_id)
-        print("secondary_caller_id:{0}".format(secondary_caller_id))
+        logger.debug(integration)
+        logger.debug(caller_id)
+        logger.debug("secondary_caller_id:{0}".format(secondary_caller_id))
         if integration == "mockapi":
             use_url = Settings.mockapi_url + caller_id
             response['url'] = use_url
@@ -144,7 +151,7 @@ async def url(request):
     except Exception as e:
         response = {"error": default_error_msg}
         traceback.print_exc()
-    print(response)
+    logger.info("/url response:{0}".format(response))
     return web.Response(text=json.dumps(response))
 
 async def options(request):
@@ -161,7 +168,7 @@ async def options(request):
     except Exception as e:
         response = {"error": default_error_msg}
         traceback.print_exc()
-    #print(response)
+    #logger.info("/options response:{0}".format(response))
     return web.Response(text=json.dumps(response))
 
 app = web.Application()
@@ -174,7 +181,8 @@ app.add_routes([web.get('/', page_handle),
 if __name__ == '__main__':
     if Settings.sf_client_id and Settings.sf_client_secret:
         asyncio.run(get_salesforce_token())
-        print("Salesforce.access_token: {0}".format(Salesforce.access_token))
+        logger.debug("Salesforce.access_token: {0}".format(Salesforce.access_token))
     else:
-        print("No Salesforce Client App configured.  Salesforce will not be an option as a result.")
+        logger.warning("No Salesforce Client App configured.  Salesforce will not be an option as a result.")
+    logger.info("Running on port {0}".format(Settings.port))
     web.run_app(app, port=Settings.port)
