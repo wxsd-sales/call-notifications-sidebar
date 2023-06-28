@@ -56,9 +56,10 @@ Note: the MockAPI and Salesforce variables should be removed, or the quotes left
 ### Sidebar App Setup
 1. Create a new app while signed in [here](https://developer.webex.com/my-apps), and choose Embedded App.  
 2. Select Sidebar and give it a name. You will need to request admin approval once created.  
+![Screenshot 2023-06-28 at 12 43 25 PM](https://github.com/wxsd-sales/call-notifications-sidebar/assets/19175490/70491bae-260b-47dc-a882-9eb80ffe55ae)
 
-3. Supply the domain and URL of the publicly accessible webserver where you plan to deploy this.
-
+4. Supply the domain and URL of the publicly accessible webserver where you plan to deploy this.  
+![Screenshot 2023-06-28 at 12 43 11 PM](https://github.com/wxsd-sales/call-notifications-sidebar/assets/19175490/9b308946-8a21-482a-a1a8-7b6e0dd03126)
     
 ## Live Demo
 
