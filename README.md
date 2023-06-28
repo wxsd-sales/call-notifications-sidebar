@@ -19,8 +19,8 @@ The PSTN Flow:
 
 - Developed on MacOS Ventura (13.2.1) & Ubuntu 22.04
 - Developed on Python 3.8.1 & 3.8.3
--   Other OS and Python versions may work but have not been tested
-- MockAPI (optional)
+    - Other OS and Python versions may work but have not been tested
+- [MockAPI](mockapi.io) (optional)
 - Salesforce (optional)
 - Webex Calling
 - [Sidebar App](https://developer.webex.com/docs/embedded-apps-framework-sidebar-api-quick-start)
@@ -58,10 +58,10 @@ Note: the MockAPI and Salesforce variables should be removed, or the quotes left
 ![Screenshot 2023-06-28 at 12 43 11 PM](https://github.com/wxsd-sales/call-notifications-sidebar/assets/19175490/9b308946-8a21-482a-a1a8-7b6e0dd03126)
 
 ### MockAPI Setup
-1. Navigate to [mockapi.ip](https://mockapi.io) and either create a new project, or add a resource to an existing project.
+1. Navigate to [mockapi.io](https://mockapi.io) and either create a new project, or add a resource to an existing project.
 2. The project can have any name, but the resource added must be called **SideBarContacts**  
 ![Screenshot 2023-06-28 at 1 12 53 PM](https://github.com/wxsd-sales/call-notifications-sidebar/assets/19175490/68f5b944-d5f5-47d6-9ad9-6b6ed75f67ce)  
-3. I recommend populating the DB with MockAPI's fake data generator, but you will need to replace at least one entry with a real number you expect to receive as an agent while testing.  
+3. It is recommended to populate the DB with MockAPI's fake data generator, but you will need to replace at least one entry with a real number you expect to receive as an agent while testing.  
 4. The phone numbers must not include any dashes (MockAPI will add dashes by default, but since these are fake numbers, they won't match regardless until you add some real ones).  
 ![Screenshot 2023-06-28 at 1 02 52 PM](https://github.com/wxsd-sales/call-notifications-sidebar/assets/19175490/5ca7628b-db41-4266-b843-f9ed6984e6cf)  
 5. Your data should then look something like this:  
