@@ -13,10 +13,6 @@ The PSTN Flow:
 - The Sidebar App displays additional information to the Agent about the caller, if the API request was successful.
 
 
-### Flow Diagram
-![PSTN Flow](https://github.com/wxsd-sales/custom-pmr-pin/assets/19175490/bb4d0ed9-7d57-4306-ae99-74d37337a562)
-
-
 ## Setup
 
 ### Prerequisites & Dependencies:
