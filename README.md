@@ -10,12 +10,7 @@ Embedded Sidebar application that reacts to inbound calls on Webex Calling.  Per
 The PSTN Flow:
 - Caller dials a PSTN number that routes to a Webex Agent (Call Queue).
 - The Sidebar App passes the information to its webserver, which does an API call to MockAPI or Salesforce in an effort to match the inbound callerID.
-- The
-
-The Server:
-- Our python server.py is listening for POST requests from Webex Connect
-- Our python server.py is monitoring the Webex Calling Queue
-- Retrieving/Storing configuration information from/to MongoDB
+- The Sidebar App displays additional information to the Agent about the caller, if the API request was successful.
 
 
 ### Flow Diagram
@@ -29,18 +24,10 @@ The Server:
 - Developed on MacOS Ventura (13.2.1) & Ubuntu 22.04
 - Developed on Python 3.8.1 & 3.8.3
 -   Other OS and Python versions may work but have not been tested
-- Mongo DB (i.e. Atlas)
-- Webex Connect
+- MockAPI (optional)
+- Salesforce (optional)
 - Webex Calling
-- [Webex Integration](https://developer.webex.com/docs/integrations) with the following scopes:
-```
-meeting:preferences_write, meeting:preferences_read, spark:people_read
-```
-
-- [Service App](https://developer.webex.com/docs/service-app) with the following scopes:
-```
-spark:organizations_read, spark:people_read, spark:people_write, spark-admin:licenses_read, spark-admin:people_read, spark-admin:people_write, spark-admin:xsi
-```
+- [Sidebar App](https://developer.webex.com/docs/embedded-apps-framework-sidebar-api-quick-start)
 
 <!-- GETTING STARTED -->
 
@@ -49,33 +36,20 @@ spark:organizations_read, spark:people_read, spark:people_write, spark-admin:lic
 ```
 pip3 install aiohttp
 pip3 install python-dotenv
-pip3 install wxcadm
-pip3 install motor
-pip3 install cachetools
 ```
 2.  Clone this repo, and create a file named ```.env``` in the repo's root directory.
 3.  Populate the following environment variables to the .env file:
 ```
-DEBUG_MODE=False
-DEV_MODE=True
+MY_APP_PORT=10031
 
-#For Handling User Web Portal
-MY_APP_PORT=8080
-MY_WEBEX_CLIENT_ID=
-MY_WEBEX_SECRET=
-MY_WEBEX_REDIRECT_URI="https://<yourserver>.<domain>/oauth"
-MY_WEBEX_SCOPES="spark%3Akms%20spark%3Apeople_read%20meeting%3Apreferences_write%20meeting%3Apreferences_read"
+MY_SALESFORCE_CLIENT_ID=""
+MY_SALESFORCE_CLIENT_SECRET=""
+MY_SALESFORCE_USERNAME=""
+MY_SALESFORCE_PASSWORD=""
 
-#For Handling XSI Manager
-#Scopes Required: 
-MY_SERVICE_APP_CLIENT_ID=
-MY_SERVICE_APP_SECRET=
-MY_SERVICE_APP_REFRESH_TOKEN=
-
-MY_CALL_QUEUE_TARGET="<identifier>@<subdomain>.cisco-bcld.com"
-MY_MONGO_URI="mongodb+srv://<username>:<password>@<name>.<subdomain>.mongodb.net/customPMRPIN?authSource=admin&retryWrites=true&w=majority"
-MY_MONGO_DB="customPMRPIN"
+MY_MOCKAPI_URL=""
 ```
+Note: the MockAPI and Salesforce variables should be removed, or the quotes left empty, if you are not using mockapi or salesforce respectively.  
 4. Run
 ```python3 server.py```
     
