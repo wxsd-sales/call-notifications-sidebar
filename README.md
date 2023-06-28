@@ -1,8 +1,6 @@
 # Call Notifications Sidebar
   
-Application that can receive PSTN calls (Webex Connect) with custom IVR, and direct the caller to a Webex PMR (by way of Webex Calling).  
-
-This project was developed to provide a method for PSTN callers to join PMRs using a single static DID and a static 7 digit PIN, that can be customized by each user (per PMR).
+Embedded Sidebar application that reacts to inbound calls on Webex Calling.  Perhaps the signed in Webex User is an Agent receiving calls from customers.  This app can do data dips into MockAPI or Salesforce, to look up information about the customer based on the customer's caller ID, and display the customer information to the Agent.
 
 [![Vidcast Overview](https://github.com/wxsd-sales/custom-pmr-pin/assets/19175490/4861e7cd-7478-49cf-bada-223b30810691)](https://app.vidcast.io/share/3f264756-563a-4294-82f7-193643932fb3)
 
@@ -10,11 +8,9 @@ This project was developed to provide a method for PSTN callers to join PMRs usi
 ## Overview
 
 The PSTN Flow:
-- Caller dials a Webex Connect number which triggers a Webex Connect Flow.
-- Webex Connect Flow collects DTMF input, and sends an HTTP POST with the caller number and entered digits to our server
-- Webex Connect Flow patches the call to Webex Calling Queue (empty)
-- Our server monitors the Webex Calling Queue using XSI
-- When a call enters the Queue that matches the POST we received from the Webex Connect Flow, we transfer the call to the Webex PMR
+- Caller dials a PSTN number that routes to a Webex Agent (Call Queue).
+- The Sidebar App passes the information to its webserver, which does an API call to MockAPI or Salesforce in an effort to match the inbound callerID.
+- The
 
 The Server:
 - Our python server.py is listening for POST requests from Webex Connect
