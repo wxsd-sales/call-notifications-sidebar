@@ -65,7 +65,13 @@ Note: the MockAPI and Salesforce variables should be removed, or the quotes left
 1. Navigate to [mockapi.ip](https://mockapi.io) and either create a new project, or add a resource to an existing project.
 2. The project can have any name, but the resource added must be called **SideBarContacts**  
 
-3. I recommend populating the DB with MockAPI's fake data generator, but you will need to replace t
+3. I recommend populating the DB with MockAPI's fake data generator, but you will need to replace at least one entry with a real number you expect to receive as an agent while testing.
+4. The phone numbers must not include any dashes (MockAPI will add dashes by default, but since these are fake numbers, they won't match regardless until you add some real ones).
+
+5. Your data should then look something like this:  
+
+6. Your MY_MOCKAPI_URL in your .env file should then look like this: ```MY_MOCKAPI_URL="https://1234abcd.mockapi.io/SideBarContacts?number="```, where **1234abcd** is replaced with the unique alphanumeric value your project shows.
+
     
 ## Live Demo
 
