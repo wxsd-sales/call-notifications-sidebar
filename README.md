@@ -2,8 +2,7 @@
   
 Embedded Sidebar application that reacts to inbound calls on Webex Calling.  Perhaps the signed in Webex User is an Agent receiving calls from customers.  This app can do data dips into MockAPI or Salesforce, to look up information about the customer based on the customer's caller ID, and display the customer information to the Agent.
 
-[![Vidcast Overview](https://github.com/wxsd-sales/custom-pmr-pin/assets/19175490/4861e7cd-7478-49cf-bada-223b30810691)](https://app.vidcast.io/share/3f264756-563a-4294-82f7-193643932fb3)
-
+[![Vidcast Overview](https://github.com/wxsd-sales/call-notifications-sidebar/assets/19175490/980de741-1a2c-4aea-883e-4da629bc8701)](https://app.vidcast.io/share/677cc9bc-b0bb-4419-9338-5f4bbe0100a3)
 
 ## Overview
 
@@ -72,7 +71,7 @@ Note: the MockAPI and Salesforce variables should be removed, or the quotes left
 ## Live Demo
 
 <!-- Update your vidcast link -->
-Check out our Vidcast recording, [here](https://app.vidcast.io/share/3f264756-563a-4294-82f7-193643932fb3)!
+Check out our Vidcast recording, [here](https://app.vidcast.io/share/677cc9bc-b0bb-4419-9338-5f4bbe0100a3)!
 
 <!-- Keep the following statement -->
 *For more demos & PoCs like this, check out our [Webex Labs site](https://collabtoolbox.cisco.com/webex-labs).
