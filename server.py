@@ -84,7 +84,7 @@ async def get_salesforce_contact(select_items, caller_id, secondary_caller_id):
     if secondary_caller_id:
         data = await salesforce_query(select_items, urllib.parse.quote_plus(secondary_caller_id))
     if data == {} or len(data.get('records', [])) == 0:
-        data = await salesforce_query(select_items, caller_id)
+        data = await salesforce_query(select_items, urllib.parse.quote_plus(caller_id))
     logger.info("Salesforce API resp:{0}".format(data))
     if len(data.get('records', [])) > 0:
         data = data['records'][0]
@@ -159,7 +159,7 @@ async def options(request):
     POST requests from the UI 
     """
     default_error_msg = "A unknown error occurred."
-    response = {"mockapi":False, "salesforce":False}
+    response = {"mockapi":False, "salesforce":False, "developer":Settings.dev_mode}
     try:
         if Settings.sf_client_id and Settings.sf_client_secret:
             response["salesforce"] = True
@@ -168,7 +168,7 @@ async def options(request):
     except Exception as e:
         response = {"error": default_error_msg}
         traceback.print_exc()
-    #logger.info("/options response:{0}".format(response))
+    logger.info("/options response:{0}".format(response))
     return web.Response(text=json.dumps(response))
 
 app = web.Application()
@@ -176,6 +176,7 @@ app.add_routes([web.get('/', page_handle),
                 web.post('/api', api),
                 web.post('/url', url),
                 web.post('/options', options),
+                web.static('/static', 'static')
                ])
 
 if __name__ == '__main__':
