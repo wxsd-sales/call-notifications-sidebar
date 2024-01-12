@@ -2,6 +2,7 @@ import aiohttp
 import asyncio
 import json
 import logging
+import os
 import traceback
 import urllib.parse
 
@@ -31,12 +32,17 @@ async def simple_get(use_url, headers={}):
             return resp.status, res
 
 async def simple_post(use_url, data={}):
-    async with aiohttp.ClientSession() as session:
-        async with session.post(use_url, json=data) as resp:
-            res = await resp.json()
-            if resp.status > 299:
-                logger.debug(resp, res)
-            return res
+    try:
+        async with aiohttp.ClientSession() as session:
+            async with session.post(use_url, json=data) as resp:
+                res = await resp.json()
+                if resp.status > 299:
+                    logger.debug("resp:{0}".format(resp))
+                    logger.debug("res:{0}".format(res))
+                return res
+    except Exception as e:
+        traceback.print_exc()
+        return None
 
 async def salesforce_get(url, attempts=0):
     headers = {"Accept":"application/json",
@@ -171,12 +177,13 @@ async def options(request):
     logger.info("/options response:{0}".format(response))
     return web.Response(text=json.dumps(response))
 
+print(os.getcwd())
 app = web.Application()
 app.add_routes([web.get('/', page_handle),
                 web.post('/api', api),
                 web.post('/url', url),
                 web.post('/options', options),
-                web.static('/static', 'static')
+                web.static('/static', os.path.join(os.getcwd(),'static'))
                ])
 
 if __name__ == '__main__':

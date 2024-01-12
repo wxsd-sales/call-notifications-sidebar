@@ -1,7 +1,7 @@
 ############################################################
 # Dockerfile to build Call Notifications Sidebar App
 ############################################################
-#sudo docker build -t call-notifications-sidebar .
+#docker build -t call-notifications-sidebar .
 #docker run -i -p 10031:10031 -t call-notifications-sidebar
 ###########################################################################
 
