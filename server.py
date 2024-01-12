@@ -27,8 +27,8 @@ async def simple_get(use_url, headers={}):
         async with session.get(use_url) as resp:
             res = await resp.json()
             if resp.status > 299:
-                logger.debug("resp:{0}".format(resp))
-                logger.debug("res:{0}".format(res))
+                logger.error("resp:{0}".format(resp))
+                logger.error("res:{0}".format(res))
             return resp.status, res
 
 async def simple_post(use_url, data={}):
@@ -37,8 +37,8 @@ async def simple_post(use_url, data={}):
             async with session.post(use_url, json=data) as resp:
                 res = await resp.json()
                 if resp.status > 299:
-                    logger.debug("resp:{0}".format(resp))
-                    logger.debug("res:{0}".format(res))
+                    logger.error("resp:{0}".format(resp))
+                    logger.error("res:{0}".format(res))
                 return res
     except Exception as e:
         traceback.print_exc()
@@ -66,8 +66,8 @@ async def get_salesforce_token():
     url = "https://login.salesforce.com/services/oauth2/token?"
     url += "client_id={0}&".format(Settings.sf_client_id)
     url += "client_secret={0}&".format(Settings.sf_client_secret)
-    url += "username={0}&".format(Settings.sf_username)
-    url += "password={0}&grant_type=password".format(Settings.sf_password)
+    url += "username={0}&".format(urllib.parse.quote_plus(Settings.sf_username))
+    url += "password={0}&grant_type=password".format(urllib.parse.quote_plus(Settings.sf_password))
     logger.debug('get_salesforce_token url:{0}'.format(url))
     res = await simple_post(url)
     logger.debug('get_salesforce_token res:{0}'.format(res))
