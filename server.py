@@ -66,8 +66,8 @@ async def get_salesforce_token():
     url = "https://login.salesforce.com/services/oauth2/token?"
     url += "client_id={0}&".format(Settings.sf_client_id)
     url += "client_secret={0}&".format(Settings.sf_client_secret)
-    url += "username={0}&".format(urllib.parse.quote_plus(Settings.sf_username))
-    url += "password={0}&grant_type=password".format(urllib.parse.quote_plus(Settings.sf_password))
+    url += "username={0}&".format(Settings.sf_username)
+    url += "password={0}&grant_type=password".format(Settings.sf_password.replace("\\",""))
     logger.debug('get_salesforce_token url:{0}'.format(url))
     res = await simple_post(url)
     logger.debug('get_salesforce_token res:{0}'.format(res))
@@ -118,6 +118,8 @@ async def api(request):
         logger.debug("caller_id:{0}".format(caller_id))
         logger.debug("secondary_caller_id:{0}".format(secondary_caller_id))
         if integration == "mockapi":
+            if "+" in caller_id:
+                caller_id = caller_id.replace("+","")
             use_url = Settings.mockapi_url + caller_id
             status, data = await simple_get(use_url)
             if type(data) == list and len(data) > 0:
