@@ -22,6 +22,10 @@ class Salesforce:
     instance_url = None
     browser_url = ""
 
+class Hubspot:
+    access_token = None
+    org_id = None
+
 async def simple_get(use_url, headers={}):
     async with aiohttp.ClientSession(headers=headers) as session:
         async with session.get(use_url) as resp:
@@ -31,9 +35,9 @@ async def simple_get(use_url, headers={}):
                 logger.error("res:{0}".format(res))
             return resp.status, res
 
-async def simple_post(use_url, data={}):
+async def simple_post(use_url, data={}, headers={}):
     try:
-        async with aiohttp.ClientSession() as session:
+        async with aiohttp.ClientSession(headers=headers) as session:
             async with session.post(use_url, json=data) as resp:
                 res = await resp.json()
                 if resp.status > 299:
@@ -98,6 +102,33 @@ async def get_salesforce_contact(select_items, caller_id, secondary_caller_id):
         browser_url = Salesforce.browser_url.format(data["id"])
     return data, browser_url
 
+async def get_hubspot_contact(caller_id):
+    data = {}
+    browser_url = ""
+    contacts_search_url = "https://api.hubapi.com/crm/v3/objects/contacts/search"
+    headers = {"Accept":"application/json",
+                   "Authorization":"Bearer {0}".format(Hubspot.access_token)}
+    payload = {
+      "filterGroups": [
+        {
+          "filters": [
+            {
+              "value": caller_id,
+              "propertyName": "phone",
+              "operator": "EQ"
+            }
+          ]
+        }
+      ]
+    }
+    data = await simple_post(contacts_search_url, payload, headers)
+    logger.info("Hubspot API resp:{0}".format(data))
+    if len(data.get('results', [])) > 0:
+        data = data['results'][0]
+        data =  {k.lower(): v for k, v in data.items()}
+        browser_url = "https://app.hubspot.com/contacts/{0}/contact/{1}".format(Hubspot.org_id, data['id'])
+    return data, browser_url
+
 
 async def page_handle(request):
     logger.debug('serving index.html')
@@ -125,6 +156,9 @@ async def api(request):
             if type(data) == list and len(data) > 0:
                 data = data[0]
             response = {'url': use_url, 'data': data}
+        if integration == "hubspot":
+            data, browser_url = await get_hubspot_contact(caller_id)
+            response = {'url': browser_url, 'data': data}
         else:#salesforce
             select_items = "Id,name,AccountId,phone,email"
             data, browser_url = await get_salesforce_contact(select_items, caller_id, secondary_caller_id)
@@ -152,6 +186,9 @@ async def url(request):
         if integration == "mockapi":
             use_url = Settings.mockapi_url + caller_id
             response['url'] = use_url
+        if integration == "hubspot":
+            data, browser_url = await get_hubspot_contact(caller_id)
+            response['url'] = browser_url
         else:
             select_items = "Id"
             data, browser_url = await get_salesforce_contact(select_items, caller_id, secondary_caller_id)
@@ -167,10 +204,12 @@ async def options(request):
     POST requests from the UI 
     """
     default_error_msg = "A unknown error occurred."
-    response = {"mockapi":False, "salesforce":False, "developer":Settings.dev_mode}
+    response = {"mockapi":False, "salesforce":False, "hubspot":False, "developer":Settings.dev_mode}
     try:
         if Settings.sf_client_id and Settings.sf_client_secret:
             response["salesforce"] = True
+        if Settings.hs_access_token:
+            response["hubspot"] = True
         if Settings.mockapi_url:
             response["mockapi"] = True
     except Exception as e:
@@ -194,5 +233,14 @@ if __name__ == '__main__':
         logger.debug("Salesforce.access_token: {0}".format(Salesforce.access_token))
     else:
         logger.warning("No Salesforce Client App configured.  Salesforce will not be an option as a result.")
+
+    if Settings.hs_access_token:
+        Hubspot.access_token = Settings.hs_access_token
+        Hubspot.org_id = Settings.hs_org_id
+        logger.debug("Hubspot.access_token: {0}".format(Hubspot.access_token))
+    else:
+        logger.warning("No Hubspot Client App configured.  Hubspot will not be an option as a result.")
+
     logger.info("Running on port {0}".format(Settings.port))
+
     web.run_app(app, port=Settings.port)

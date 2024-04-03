@@ -6,7 +6,7 @@ const titleBGColor = urlParams.get('title-bg-color');
 const background = urlParams.get('background');
 const logo = urlParams.get('logo');
 
-var integrationNameHash = {'mockapi': "MockAPI", "salesforce": "Salesforce"};
+var integrationNameHash = {'mockapi': "MockAPI", "salesforce": "Salesforce", "hubspot": "Hubspot"};
 var embedded_app;
 
 function getActiveIntegration(){
@@ -286,6 +286,11 @@ window.addEventListener('load', function () {
         } else {
             $('#salesforce').show();
         }
+        if(!resp.hubspot){
+            $('#hubspot').removeClass('is-active');
+        } else {
+            $('#hubspot').show();
+        }
 
         console.log(resp.developer);
         if(resp.developer){
@@ -318,7 +323,7 @@ window.addEventListener('load', function () {
     }
     
     //console.log(window.webex);
-    embedded_app = new window.webex.Application();
+    embedded_app = new window.webex.Application({logs: { logLevel: 1 }});
     embedded_app.onReady().then(() => {
         console.log("onReady()", { message: "EA is ready." });
         console.log(embedded_app.application.states.user);
