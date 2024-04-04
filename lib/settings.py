@@ -11,6 +11,8 @@ class Settings(object):
     sf_client_secret = os.environ.get("MY_SALESFORCE_CLIENT_SECRET")
     sf_username = os.environ.get("MY_SALESFORCE_USERNAME")
     sf_password = os.environ.get("MY_SALESFORCE_PASSWORD")
+    hs_access_token = os.environ.get("HUBSPOT_ACCESS_TOKEN")
+    hs_org_id = os.environ.get("HUBSPOT_ORG_ID")
     mockapi_url = os.environ.get("MY_MOCKAPI_URL")
 
 class LogRecord(logging.LogRecord):

@@ -1,6 +1,6 @@
 # Call Notifications Sidebar
   
-Embedded Sidebar application that reacts to inbound calls on Webex Calling.  Perhaps the signed in Webex User is an Agent receiving calls from customers.  This app can do data dips into MockAPI or Salesforce, to look up information about the customer based on the customer's caller ID, and display the customer information to the Agent.
+Embedded Sidebar application that reacts to inbound calls on Webex Calling.  Perhaps the signed in Webex User is an Agent receiving calls from customers.  This app can do data dips into MockAPI, Salesforce, or Hubspot, to look up information about the customer based on the customer's caller ID, and display the customer information to the Agent.
 
 [![Vidcast Overview](https://github-production-user-asset-6210df.s3.amazonaws.com/19175490/249649420-980de741-1a2c-4aea-883e-4da629bc8701.png)](https://app.vidcast.io/share/677cc9bc-b0bb-4419-9338-5f4bbe0100a3)
 
@@ -8,7 +8,7 @@ Embedded Sidebar application that reacts to inbound calls on Webex Calling.  Per
 
 The PSTN Flow:
 - Caller dials a PSTN number that routes to a Webex Agent (Call Queue).
-- The Sidebar App passes the information to its webserver, which does an API call to MockAPI or Salesforce in an effort to match the inbound callerID.
+- The Sidebar App passes the information to its webserver, which does an API call to MockAPI, Salesforce, or Hubspot in an effort to match the inbound callerID.
 - The Sidebar App displays additional information to the Agent about the caller, if the API request was successful.
 
 
@@ -21,6 +21,7 @@ The PSTN Flow:
     - Other OS and Python versions may work but have not been tested
 - [MockAPI](mockapi.io) (optional)
 - Salesforce (optional)
+- Hubspot (optional)
 - Webex Calling
 - [Sidebar App](https://developer.webex.com/docs/embedded-apps-framework-sidebar-api-quick-start)
 
@@ -43,8 +44,11 @@ MY_SALESFORCE_USERNAME=""
 MY_SALESFORCE_PASSWORD=""
 
 MY_MOCKAPI_URL=""
+
+HUBSPOT_ACCESS_TOKEN=""
+HUBSPOT_ORG_ID=""
 ```
-Note: the MockAPI and Salesforce variables should be removed, or the quotes left empty, if you are not using mockapi or salesforce respectively.  
+Note: the MockAPI, Salesforce, or Hubspot variables should be removed, or the quotes left empty, if you are not using them.  
 4. Run
 ```python3 server.py```
 
