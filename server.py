@@ -156,7 +156,7 @@ async def api(request):
             if type(data) == list and len(data) > 0:
                 data = data[0]
             response = {'url': use_url, 'data': data}
-        if integration == "hubspot":
+        elif integration == "hubspot":
             data, browser_url = await get_hubspot_contact(caller_id)
             response = {'url': browser_url, 'data': data}
         else:#salesforce
@@ -186,10 +186,10 @@ async def url(request):
         if integration == "mockapi":
             use_url = Settings.mockapi_url + caller_id
             response['url'] = use_url
-        if integration == "hubspot":
+        elif integration == "hubspot":
             data, browser_url = await get_hubspot_contact(caller_id)
             response['url'] = browser_url
-        else:
+        else:#salesforce
             select_items = "Id"
             data, browser_url = await get_salesforce_contact(select_items, caller_id, secondary_caller_id)
             response['url'] = browser_url
